@@ -200,6 +200,41 @@ class _BaseGLM(ContainsMixin):
         return axes
 
 
+"""
+    ######
+
+    ANNA RAHN AND ISHWAR CHOUDHARY
+    To make the code more object-oriented, we can create a class named GLM and move the functions glm_region_of_interest and 
+    _glm_region_of_interest as methods of this class. 
+
+
+    Here are some potential class examples and function examples
+    class GLMResults:
+        #Results of a generalized linear model.
+        def __init__(self, stats):
+            self.stats = stats
+
+        def get_ch_names(self):
+
+        def get_chromas(self):
+            
+        def get_theta(self):
+            
+
+    class GLM:
+        
+        #Class for a generalized linear model.
+        
+        def __init__(self):
+            self.results = None
+
+        def fit(self, X, y):
+            # Code to fit the GLM
+            self.results = GLMResults(stats)  # Store the results in a structured class`
+
+"""
+
+
 @fill_doc
 class RegressionResults(_BaseGLM):
     """
