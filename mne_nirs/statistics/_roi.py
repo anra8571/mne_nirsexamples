@@ -10,6 +10,34 @@ import pandas as pd
 from mne.utils import warn
 
 
+"""
+    SUGGESTED CHANGES FOR POLYMORPHISM:
+    ######
+
+    ANNA RAHN AND ISHWAR CHOUDHARY
+    To include polymorphism, we define a base class that define the common methods and attributes shared by all 
+    the classes that will inherit from it. Then, we definee child classes that inherit from the above base class.
+
+    glm_region_of_interest and _glm_region_of_interest are quite similar looking so, a change like this might be feasible
+
+
+    class RegionOfInterest:
+        def __init__(self, glm, group_by, cond_idx, cond_name, weighted=True):
+            self.glm = glm
+            self.group_by = group_by
+            self.cond_idx = cond_idx
+            self.cond_name = cond_name
+            self.weighted = weighted
+
+    def calculate_statistics(self):
+        >>> glm_region_of_interest code goes in here <<<
+
+    def _calculate_statistics(self):
+        >>> _glm_region_of_interest code goes in here <<<
+        
+"""
+
+
 def glm_region_of_interest(glm, group_by, cond_idx,
                            cond_name, weighted=True):
     """
