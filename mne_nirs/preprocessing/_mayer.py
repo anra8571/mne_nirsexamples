@@ -2,13 +2,14 @@
 #
 # License: BSD (3-clause)
 
+# Recommendation: Moving all imports to top of file
 import numpy as np
 import pandas as pd
 
 from mne import pick_types
 from mne.io import BaseRaw
 from mne.utils import _validate_type, _require_version
-
+from fooof import FOOOF
 
 def quantify_mayer_fooof(raw, num_oscillations=1, centre_frequency=0.01,
                          extra_df_fields={},
@@ -114,7 +115,6 @@ def _run_fooof(raw,
                n_overlap=200, n_fft=400,
                peak_width_limits=(0.5, 12.0)):
     """Prepare data for FOOOF including welch and scaling, then apply."""
-    from fooof import FOOOF
 
     psd = raw.compute_psd(
         fmin=fmin, fmax=fmax, tmin=tmin, tmax=tmax,

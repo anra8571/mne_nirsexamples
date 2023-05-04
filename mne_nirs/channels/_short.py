@@ -7,6 +7,42 @@ from mne.utils import _validate_type
 from mne.io import BaseRaw
 import mne
 
+# Recommendation: Use polymorphism as described in our powerpoint. Use get_channels as opposed to the following two
+def get_channels(raw, max_dist=0.01, min_dist = None):
+    """
+    Return channels with a short source-detector separation.
+
+    Parameters
+    ----------
+    raw : instance of Raw
+        Raw instance containing fNIRS data.
+    max_dist : number
+        Maximum distance of returned channels (m).
+
+    Returns
+    -------
+    raw : instance of Raw
+        Raw instance with only short channels.
+    """
+
+    chans = raw.copy().load_data()
+    _validate_type(chans, BaseRaw, 'raw')
+
+    picks = mne.pick_types(chans.info, meg=False, eeg=False, fnirs=True,
+                           exclude=[])
+    if not len(picks):
+        raise RuntimeError('Short channel extraction for NIRS signals only.')
+
+    dists = source_detector_distances(chans.info, picks=picks)
+
+    # If the optional parameter is passed in, we know it is a long channel
+    if (min_dist is not None):
+        chans.pick(picks[(dists > min_dist) & (dists < max_dist)])
+    # Otherwise, use a short channel
+    else:
+        chans.pick(picks[dists < max_dist])
+
+    return chans
 
 def get_short_channels(raw, max_dist=0.01):
     """

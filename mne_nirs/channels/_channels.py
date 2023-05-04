@@ -8,6 +8,39 @@ from mne import pick_types
 from mne.utils import _validate_type
 from mne.io import BaseRaw
 
+# Recommendation: Pass in integer instead of using the same function twice (with different variable names). Here, our example defaults to sources unless a detector is specified
+def list_channels(raw, channel_type=1):
+    """
+    List all the sources in the fNIRS montage.
+
+    Parameters
+    ----------
+    raw : instance of Raw
+        Raw instance containing fNIRS data.
+
+    Returns
+    -------
+    sources : list
+        Unique list of all sources in ascending order.
+    """
+    _validate_type(raw, BaseRaw, 'raw')
+
+    picks = pick_types(raw.info, meg=False, eeg=False, fnirs=True,
+                       exclude=[])
+    if not len(picks):
+        raise RuntimeError('Listing source is for fNIRS signals only.')
+
+    channels = list()
+    ch_names = raw.ch_names
+    for pick in picks:
+        x = re.search(r"S(\d+)_D(\d+)", ch_names[pick])
+        
+        # Here is where we recommend the change
+        channels.append(int(x.group(channel_type)))
+
+    channels = np.unique(channels)
+
+    return channels
 
 def list_sources(raw):
     """
