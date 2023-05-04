@@ -73,7 +73,7 @@ _REPLACEMENTS = (
 )
 
 
-def statsmodels_to_results(model, order=None):
+def statsmodels_to_results(model, order=None, summary_to_dataframe_func=summary_to_dataframe, expand_summary_dataframe_func=expand_summary_dataframe):
     """
     Convert statsmodels summary to a dataframe.
 
@@ -84,12 +84,31 @@ def statsmodels_to_results(model, order=None):
     order : array of str
         Requested order of the channels.
 
+    SUGGESTED CHANGE FOR DEPENDENCY INJECTION:
+    ######
+
+    ANNA RAHN AND ISHWAR CHOUDHARY
+    
+    summary_to_dataframe_func : function
+        Function to convert statsmodels summary to pandas dataframe.
+
+    expand_summary_dataframe_func : function
+        Function to expand dataframe index column in to individual columns.
+
+    To include dependency injection in this code, we can use the constructor injection pattern, where the dependencies are passed to the 
+    class or function constructor as arguments, instead of being hard-coded in the body of the function. This makes the code more flexible, reusable, and testable.
+
+    In this modified version of statsmodels_to_results(), we've added two new arguments: summary_to_dataframe_func and expand_summary_dataframe_func. 
+    These arguments are functions that can be used to convert stats
+
+    ######
+
     Returns
     -------
     df : Pandas dataframe.
         Data frame with the results from the stats model.
     """
-    df = summary_to_dataframe(model.summary())
+    df = summary_to_dataframe_func(model.summary())
     # deal with numerical precision loss in at least some of the values
     for col, attr in _REPLACEMENTS:
         if col in df.columns:
@@ -125,7 +144,7 @@ def statsmodels_to_results(model, order=None):
         df.iloc[model.k_fe:, df.columns == 'Coef.'] = sdf[:, 0]
         df.iloc[model.k_fe:, df.columns == 'Std.Err.'] = sdf[:, 1]
 
-    df = expand_summary_dataframe(df)
+    df = expand_summary_dataframe_func(df)
 
     if order is not None:
         df['old_index'] = df.index
